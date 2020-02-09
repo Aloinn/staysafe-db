@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var config = require('./../config');
+var config = require('../config');
 const Crypto = require('crypto')
 const jwt = require('jsonwebtoken');
 
@@ -15,7 +15,7 @@ function validatePhone(phone) {
 }
 
 // CREATE NEW USER
-router.post('/', function(req, res){
+router.post('/register', (req, res)=>{
   if(req.body.csrf_key != config.csrf_key){return res.status(400).send('Invalid CSRF!')}
   let salt = Crypto.randomBytes(16).toString('base64')
   let hash = Crypto.createHmac('sha512',salt).update(req.body.password).digest("base64");
@@ -28,21 +28,20 @@ router.post('/', function(req, res){
   User.create({
     phone     : req.body.phone,
     password  : req.body.password,
-  },
-  function(err, user){
-    if(err){return res.status(500).send("There was a problem with request!")}
+  },(err, user)=>{
+    if(err){return res.status(500).send("The cellphone has already been taken!")}
     res.status(200).send(user);
   });
 });
 
 // LOGIN
 router.post('/login', (req, res)=>{
-  User.findOne({'phone': req.body.phone}, (err, user)=>{
-    console.log(req.body.phone)
+  console.log(req.body.phone)
+  User.findOne({ 'phone' : req.body.phone}, (err, user)=>{
     if(req.body.csrf_key != config.csrf_key){return res.status(400).send('Invalid CSRF!')}
-
     if(err){return res.status(500).send('Server error')}
     if(!user){return res.status(404).send('No users exist with credentials')}
+
 
     // Getting old password
     let passwordFields = user.password.split('$');

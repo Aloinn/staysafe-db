@@ -7,7 +7,7 @@ router.use(bodyParser.urlencoded({extended:true}));
 var Crime = require('./Crime')
 
 router.post('/', (req, res)=>{
-  jwt.verify(req.token, secretOrPublicKey, [options, callback])
+  //jwt.verify(req.token, secretOrPublicKey, [options, callback])
   (async () =>{
     try{
       Crime.create({
@@ -24,8 +24,8 @@ router.post('/', (req, res)=>{
 })
 
 router.get('/', (req, res)=>{
-  User.find({}, function(err, users){
-    if(err){return res.status(500).send("There was a problem finding the users!")}
+  Crime.find({}, function(err, users){
+    if(err){return res.status(500).send("There was a problem finding the crimes!")}
     res.status(200).send(users);
   })
 })
