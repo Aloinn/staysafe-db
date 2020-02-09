@@ -7,13 +7,14 @@ router.use(bodyParser.urlencoded({extended:true}));
 var Crime = require('./Crime')
 
 router.post('/', (req, res)=>{
-  //jwt.verify(req.token, secretOrPublicKey, [options, callback])
+  jwt.verify(req.body.token, secretOrPublicKey, [options, callback])
   (async () =>{
     try{
       Crime.create({
         latitude   : req.body.latitude,
         longitude  : req.body.longitude,
         crime      : req.body.crime,
+
       },
       function(err, crime){
         if(err){return res.status(500).send("There was a problem with request!")}

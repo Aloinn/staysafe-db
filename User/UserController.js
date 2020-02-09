@@ -17,6 +17,7 @@ function validatePhone(phone) {
 
 // CREATE NEW USER
 router.post('/register', (req, res)=>{
+  console.log(req.body)
   if(req.body.csrf_key != config.csrf_key){return res.status(400).send('Invalid CSRF!')}
   let salt = Crypto.randomBytes(16).toString('base64')
   let hash = Crypto.createHmac('sha512',salt).update(req.body.password).digest("base64");
@@ -25,13 +26,15 @@ router.post('/register', (req, res)=>{
 
   if(!validatePhone(req.body.phone))
   {return res.status(400).send("Invalid phone number!")}
-
+  console.log(req.body)
   User.create({
     phone     : req.body.phone,
     password  : req.body.password,
   },(err, user)=>{
     if(err){return res.status(500).send("The cellphone has already been taken!")}
-    res.status(200).send(user);
+    // USER AUTHENTICATED!
+    var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
+    res.status(200).send(token);
   });
 });
 /*
@@ -62,7 +65,7 @@ router.post('/test',(req, res)=>{
 
 // LOGIN
 router.post('/login', (req, res)=>{
-  console.log(req.body.phone)
+  console.log(req.body)
   User.findOne({ 'phone' : req.body.phone}, (err, user)=>{
     if(req.body.csrf_key != config.csrf_key){return res.status(400).send('Invalid CSRF!')}
     if(err){return res.status(500).send('Server error')}
@@ -81,9 +84,7 @@ router.post('/login', (req, res)=>{
 
       // USER AUTHENTICATED!
       var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
-      req.body.auth = true;
-      req.body.token = token;
-      res.status(200).send(req.body.token)
+      res.status(200).send(token);
     } else {
       // USER NOT AUTHENTICATED
       return res.status(401).send('Invalid password!')
