@@ -15,6 +15,9 @@ var CrimeSchema = new Schema({
   crime: {
     type: String,
     required: [true, "Crime required"]
+  },
+  date: {
+    type: Date,
   }
 })
 
