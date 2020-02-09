@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.post('/test', (req, res)=>{
   console.log(req.body)
+  res.status(200).send('cool'!);
 })
 app.get('/test', (req,res)=>{
   console.log('test');
