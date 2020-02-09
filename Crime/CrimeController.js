@@ -14,7 +14,7 @@ router.post('/', (req, res)=>{
         latitude   : req.body.latitude,
         longitude  : req.body.longitude,
         crime      : req.body.crime,
-
+        date        : new Date(),
       },
       function(err, crime){
         if(err){return res.status(500).send("There was a problem with request!")}
