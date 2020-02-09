@@ -24,7 +24,7 @@ app.post('/test', (req, res)=>{
 })
 app.get('/test', (req,res)=>{
   console.log('test');
-  res.status(200).send();
+  res.status(200).send('nice!');
 })
 // END TEST AREA
 
